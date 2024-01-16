@@ -1,0 +1,16 @@
+[package]
+name = "traktor-mizer-bridge"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+axum = "0.7"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+color-eyre = "0.6"
+serde = "1"
+serde_derive = "1"
+serde_json = "1"
+rosc = "0.10"
+toml = "0.8"
