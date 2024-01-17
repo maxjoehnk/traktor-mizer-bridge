@@ -1,5 +1,6 @@
 use std::fmt;
 use serde_derive::Deserialize;
+use serde_with::serde_as;
 
 #[derive(Debug, Clone, Copy, Deserialize, Eq, PartialEq, Hash)]
 pub enum Deck {
@@ -31,11 +32,14 @@ pub struct UpdateDeck {
     pub is_synced: Option<bool>,
 }
 
+#[serde_as]
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct DeckLoaded {
     pub title: String,
+    #[serde_as(as = "serde_with::NoneAsEmptyString")]
     pub album: Option<String>,
+    #[serde_as(as = "serde_with::NoneAsEmptyString")]
     pub artist: Option<String>,
     pub bpm: f64,
     pub is_playing: bool,
@@ -51,7 +55,8 @@ pub struct UpdateChannel {
 
 #[cfg(test)]
 mod tests {
-    use crate::models::Deck;
+    use serde_json::json;
+    use crate::models::{Deck, DeckLoaded};
 
     #[test]
     fn parse_deck() -> Result<(), serde_json::Error> {
@@ -64,6 +69,17 @@ mod tests {
         assert_eq!(deck_b, Deck::B);
         assert_eq!(deck_c, Deck::C);
         assert_eq!(deck_d, Deck::D);
+        Ok(())
+    }
+
+    #[test]
+    fn parse_deck_loaded() -> Result<(), serde_json::Error> {
+        let input = json!({ "title": "", "album": "", "artist": "", "bpm": 0, "isPlaying": false, "tempo": 0, "trackLength": 0 });
+
+        let model = serde_json::from_value::<DeckLoaded>(input)?;
+
+        assert_eq!(model.artist, None);
+        assert_eq!(model.album, None);
         Ok(())
     }
 }

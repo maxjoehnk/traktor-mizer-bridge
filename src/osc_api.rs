@@ -37,6 +37,8 @@ impl OscApi {
         let mut builder = BundleBuilder::new(format!("/decks/{deck}"));
         if let Some(track) = state.track {
             builder.add("title", track.title);
+            builder.add("artist", track.artist.unwrap_or_default());
+            builder.add("album", track.album.unwrap_or_default());
             builder.add("bpm", track.bpm);
             builder.add("length", track.length.as_secs_f64());
         }
